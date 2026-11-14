@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>熊本土地リスト v1.2.0</title>
+<title>熊本土地リスト v1.2.1</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#2e6b30">
 <link rel="icon" href="./icons/icon-192.png">
@@ -29,7 +29,7 @@
   .count { font-size:13px; color:#555; padding:6px 12px 0; }
   .card { background:#fff; margin:9px 10px; padding:10px 12px; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,.12); position:relative; }
   .card.excluded { opacity:.62; }
-  button.excl { position:absolute; top:8px; right:8px; font-size:11px; padding:4px 8px; border-radius:20px; border:1px solid #bbb; background:#f1f3f1; color:#555; }
+  button.excl { position:absolute; top:8px; right:8px; z-index:5; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:20px; border:1.5px solid #2e6b30; background:#fff; color:#2e6b30; }
   button.excl.on { background:#868e96; color:#fff; border-color:#868e96; }
   .addr { padding-right:64px; }
   .top { display:flex; gap:10px; }
@@ -61,7 +61,7 @@
 <body>
 <header>
   <h1>熊本土地リスト</h1>
-  <span class="ver">v1.2.0／2026年11月14日収集・146件</span>
+  <span class="ver">v1.2.1／2026年11月14日収集・146件</span>
 </header>
 <div class="bar">
   <button class="toggle" id="toggleBtn">🔍 検索・絞り込み</button>
@@ -158,6 +158,7 @@ function render(){
     if(d.rank && d.rank<=10) badge = '<span class="badge rank">おすすめ '+d.rank+'位</span>';
     else if(d.rank) badge = '<span class="badge jiten">次点</span>';
     if(d.outside) badge += '<span class="badge outside">都市計画区域外</span>';
+    if(excluded.has(d.url)) badge += '<span class="badge outside">候補外</span>';
     let school = "";
     if(d.school){
       if(d.school.e) school = '<div class="school">🏫 '+d.school.e+" "+fmtDist(d.school.em)+" ／ "+d.school.j+" "+fmtDist(d.school.jm)+(d.school.note ? '<br><span style="color:#888;font-size:12px;">'+d.school.note+'</span>' : "")+"</div>";
@@ -166,9 +167,9 @@ function render(){
     const thumb = d.img
       ? '<div class="thumb"><img loading="lazy" src="'+d.img+'" alt="土地の写真" onerror="this.parentNode.innerHTML=\'<div class=&quot;ph&quot;><b>🏞️</b>写真は物件ページで</div>\'"></div>'
       : '<div class="thumb"><div class="ph"><b>🏞️</b>写真は<br>物件ページで</div></div>';
-    return '<div class="card"><div class="top">'+thumb+'<div class="main"><div class="addr">'+badge+d.addr+'</div>'
+    return '<div class="card'+(excluded.has(d.url)?' excluded':'')+'"><button class="excl'+(excluded.has(d.url)?' on':'')+'" data-exurl="'+d.url+'">'+(excluded.has(d.url)?'候補外を解除':'候補外')+'</button><div class="top">'+thumb+'<div class="main"><div class="addr">'+badge+d.addr+'</div>'
       + '<div class="price">'+d.price+'万円 <small>／ '+d.area+'坪 ／ 坪'+d.unit+'万円</small></div>'
-      + '<div class="meta">区画の目安：'+lotsTxt+'</div></div></div>'
+      + '<div class="meta">区画の目安：'+lotsTxt+'<br>情報取得日：'+fmtDate(d.date)+'</div></div></div>'
       + (d.point ? '<div class="point"><b>おすすめポイント：</b>'+d.point+'</div>' : "")
       + school
       + (d.note ? '<div class="note">※'+d.note+'</div>' : "")
