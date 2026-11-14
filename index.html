@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>熊本土地リスト v1.2.1</title>
+<title>熊本土地リスト v1.3.0</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#2e6b30">
 <link rel="icon" href="./icons/icon-192.png">
@@ -53,6 +53,7 @@
   .src { color:#666; font-size:12px; margin-top:4px; }
   .actions { display:flex; gap:8px; margin-top:9px; }
   a.open { flex:1; text-align:center; background:#2e6b30; color:#fff; text-decoration:none; padding:10px; border-radius:9px; font-size:15px; font-weight:bold; }
+  a.mapbtn { text-align:center; background:#fff; color:#2e6b30; border:1.5px solid #2e6b30; text-decoration:none; padding:10px 12px; border-radius:9px; font-size:15px; font-weight:bold; white-space:nowrap; }
   button.fav { width:50px; font-size:19px; background:#fff; border:1px solid #ccc; border-radius:9px; }
   button.fav.on { background:#fff3bf; border-color:#f08c00; }
   footer { font-size:12px; color:#666; padding:12px 14px 20px; line-height:1.7; }
@@ -61,7 +62,7 @@
 <body>
 <header>
   <h1>熊本土地リスト</h1>
-  <span class="ver">v1.2.1／2026年11月14日収集・146件</span>
+  <span class="ver">v1.3.0／2026年11月14日収集・146件</span>
 </header>
 <div class="bar">
   <button class="toggle" id="toggleBtn">🔍 検索・絞り込み</button>
@@ -99,6 +100,7 @@
   ・写真は、掲載サイトから表示できた物件だけサムネイル表示しています。表示がない物件は「物件ページを開く」から写真を確認してください（アットホームなど外部表示が制限されているサイトがあります）。<br>
   ・学校までの距離は町名の代表点からの目安です。番地によって校区も距離も変わります。<br>
   ・「約○区画」は1区画あたり約28坪で単純に割った目安です。実際に分けられるかは土地の形と道路の付き方で変わります。<br>
+  ・「📍地図」はGoogleマップで、その町名の位置を開きます。番地までは分からないため、ピンは町名の中心あたりで、実際の土地の場所とはずれます。正確な場所は物件ページで確認してください。<br>
   ・お気に入り（☆）と候補外の設定は、この端末の中だけに保存されます。候補外は通常は表示されず、「検索・絞り込み」の中の「候補外も表示」で見られます。<br>
   ・情報取得日は、その物件の情報を集めた日です。今は全件2026年11月14日です。新着フィルターは今日の日付と比べて絞り込みます。
 </footer>
@@ -175,6 +177,7 @@ function render(){
       + (d.note ? '<div class="note">※'+d.note+'</div>' : "")
       + '<div class="src">'+d.source+'</div>'
       + '<div class="actions"><a class="open" href="'+d.url+'" target="_blank" rel="noopener">物件ページを開く</a>'
+      + '<a class="mapbtn" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('熊本県熊本市'+d.addr)+'" target="_blank" rel="noopener">📍地図</a>'
       + '<button class="fav'+(favs.has(d.url)?" on":"")+'" data-url="'+d.url+'">'+(favs.has(d.url)?"★":"☆")+'</button></div></div>';
   }).join("");
   document.querySelectorAll("button.excl").forEach(b => b.addEventListener("click", () => {
