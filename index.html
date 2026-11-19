@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>熊本土地リスト v1.6.0</title>
+<title>熊本土地リスト v1.6.1</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#2e6b30">
 <link rel="icon" href="./icons/icon-192.png">
@@ -63,7 +63,7 @@
 <body>
 <header>
   <h1>熊本土地リスト</h1>
-  <span class="ver" id="verInfo">v1.6.0</span>
+  <span class="ver" id="verInfo">v1.6.1</span>
 </header>
 <div class="bar">
   <button class="toggle" id="toggleBtn">🔍 検索・絞り込み</button>
@@ -89,7 +89,7 @@
     <label class="chk"><input type="checkbox" id="onlyRank"> おすすめ・次点のみ</label>
     <label class="chk"><input type="checkbox" id="onlyFav"> お気に入りのみ</label>
     <label class="chk"><input type="checkbox" id="nearSchool"> 小学校1km以内（判明分）</label>
-    <label class="chk"><input type="checkbox" id="showOutside"> 都市計画区域外も表示</label>
+    <label class="chk"><input type="checkbox" id="showOutside" checked> 都市計画区域外も表示</label>
     <label class="chk"><input type="checkbox" id="showExcluded"> 候補外も表示</label>
   </div>
 </div>
@@ -124,7 +124,6 @@ function activeTxt(){
   if($("onlyRank").checked) t.push("おすすめ・次点のみ");
   if($("onlyFav").checked) t.push("お気に入りのみ");
   if($("nearSchool").checked) t.push("小学校1km以内");
-  if($("showOutside").checked) t.push("区域外も表示");
   if($("fresh").value) t.push("新着"+$("fresh").value+"日以内");
   if($("showExcluded").checked) t.push("候補外も表示");
   else if(excluded.size) t.push("候補外"+excluded.size+"件は非表示中");
@@ -198,7 +197,7 @@ function render(){
 $("toggleBtn").addEventListener("click", () => $("panel").classList.toggle("open"));
 $("clearBtn").addEventListener("click", () => {
   $("q").value=""; $("ward").value=""; $("lots").value=""; $("fresh").value="";
-  ["onlyRank","onlyFav","nearSchool","showOutside","showExcluded"].forEach(id => $(id).checked=false);
+  ["onlyRank","onlyFav","nearSchool","showExcluded"].forEach(id => $(id).checked=false); $("showOutside").checked=true;
   render();
 });
 ["q","ward","lots","sort","fresh","onlyRank","onlyFav","nearSchool","showOutside","showExcluded"].forEach(id => {
@@ -206,7 +205,7 @@ $("clearBtn").addEventListener("click", () => {
 });
 const latestDate = DATA.reduce((a,d)=> d.date>a?d.date:a, "");
 const fmtMD = s => Number(s.slice(5,7))+"月"+Number(s.slice(8,10))+"日";
-$("verInfo").textContent = "v1.6.0／全"+DATA.length+"件（"+fmtMD(latestDate)+"時点）";
+$("verInfo").textContent = "v1.6.1／全"+DATA.length+"件（"+fmtMD(latestDate)+"時点）";
 $("ftPin").textContent = DATA.filter(d=>d.lat).length;
 $("ftNoPin").textContent = DATA.filter(d=>!d.lat).length;
 $("ftLatest").textContent = fmtMD(latestDate);
