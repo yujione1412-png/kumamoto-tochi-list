@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>熊本土地リスト v1.6.4</title>
+<title>熊本土地リスト v1.6.5</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#2e6b30">
 <link rel="icon" href="./icons/icon-192.png">
@@ -57,10 +57,10 @@
   .point b { color:#b97d06; }
   .note { color:#b02a2a; font-size:12px; margin-top:4px; }
   .src { color:#666; font-size:12px; margin-top:4px; }
-  .actions { display:flex; gap:8px; margin-top:9px; flex-wrap:wrap; }
-  a.open { flex:1; text-align:center; background:#2e6b30; color:#fff; text-decoration:none; padding:10px; border-radius:9px; font-size:15px; font-weight:bold; }
-  a.mapbtn { text-align:center; background:#fff; color:#2e6b30; border:1.5px solid #2e6b30; text-decoration:none; padding:10px 12px; border-radius:9px; font-size:15px; font-weight:bold; white-space:nowrap; }
-  button.fav { width:50px; font-size:19px; background:#fff; border:1px solid #ccc; border-radius:9px; }
+  .actions { display:flex; gap:7px; margin-top:9px; align-items:stretch; }
+  a.open { flex:2 1 0; text-align:center; background:#2e6b30; color:#fff; text-decoration:none; padding:10px 6px; border-radius:9px; font-size:13.5px; font-weight:bold; white-space:nowrap; }
+  a.mapbtn { flex:1 1 0; text-align:center; background:#fff; color:#2e6b30; border:1.5px solid #2e6b30; text-decoration:none; padding:10px 6px; border-radius:9px; font-size:13.5px; font-weight:bold; white-space:nowrap; }
+  button.fav { flex:0 0 44px; width:44px; font-size:19px; background:#fff; border:1px solid #ccc; border-radius:9px; }
   button.fav.on { background:#fff3bf; border-color:#f08c00; }
   footer { font-size:12px; color:#666; padding:12px 14px 20px; line-height:1.7; }
 </style>
@@ -68,7 +68,7 @@
 <body>
 <header>
   <h1>熊本土地リスト</h1>
-  <span class="ver" id="verInfo">v1.6.4</span>
+  <span class="ver" id="verInfo">v1.6.5</span>
 </header>
 <div class="bar">
   <button class="toggle" id="toggleBtn">🔍 検索・絞り込み</button>
@@ -221,7 +221,7 @@ $("clearBtn").addEventListener("click", () => {
 });
 const latestDate = DATA.reduce((a,d)=> d.date>a?d.date:a, "");
 const fmtMD = s => Number(s.slice(5,7))+"月"+Number(s.slice(8,10))+"日";
-$("verInfo").textContent = "v1.6.4／全"+DATA.length+"件（"+fmtMD(latestDate)+"時点）";
+$("verInfo").textContent = "v1.6.5／全"+DATA.length+"件（"+fmtMD(latestDate)+"時点）";
 $("ftPin").textContent = DATA.filter(d=>d.lat).length;
 $("ftNoPin").textContent = DATA.filter(d=>!d.lat).length;
 $("ftLatest").textContent = fmtMD(latestDate);
