@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>熊本土地リスト v1.6.5</title>
+<title>熊本土地リスト v1.6.6</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#2e6b30">
 <link rel="icon" href="./icons/icon-192.png">
@@ -68,7 +68,7 @@
 <body>
 <header>
   <h1>熊本土地リスト</h1>
-  <span class="ver" id="verInfo">v1.6.5</span>
+  <span class="ver" id="verInfo">v1.6.6</span>
 </header>
 <div class="bar">
   <button class="toggle" id="toggleBtn">🔍 検索・絞り込み</button>
@@ -90,6 +90,10 @@
     <button class="toggle" id="clearBtn" style="background:#868e96;">条件を消す</button>
   </div>
   <div class="row" style="margin-top:8px;">
+    <label class="chk">面積 <input type="number" id="maxArea" inputmode="numeric" min="0" placeholder="上限なし" style="width:92px; padding:6px; font-size:15px;"> ㎡以下</label>
+    <label class="chk">坪単価 <input type="number" id="maxUnit" inputmode="decimal" min="0" placeholder="上限なし" style="width:92px; padding:6px; font-size:15px;"> 万円以下</label>
+  </div>
+  <div class="row" style="margin-top:8px;">
     <label class="chk"><input type="checkbox" id="onlyRank"> おすすめ・次点のみ</label>
     <label class="chk"><input type="checkbox" id="onlyFav"> お気に入りのみ</label>
     <label class="chk"><input type="checkbox" id="nearSchool"> 小学校1km以内（判明分）</label>
@@ -104,7 +108,7 @@
 <div class="count" id="count"></div>
 <div id="list"></div>
 <footer>
-  ・条件：熊本市内（植木町除く）・20〜200坪・坪単価12万円以下・建築条件なし・市街化調整区域を除く。価格・掲載は、各物件の「情報取得日」時点のものです。<br>
+  ・条件：熊本市内（植木町除く）・20坪以上1000㎡未満・坪単価15万円以下・建築条件なし・市街化調整区域を除く。価格・掲載は、各物件の「情報取得日」時点のものです。<br>
   ・写真は、掲載サイトから表示できた物件だけサムネイル表示しています。表示がない物件は「物件ページを開く」から写真を確認してください（アットホームなど外部表示が制限されているサイトがあります）。<br>
   ・学校までの距離は町名の代表点からの目安です。番地によって校区も距離も変わります。<br>
   ・「約○区画」は1区画あたり約28坪で単純に割った目安です。実際に分けられるかは土地の形と道路の付き方で変わります。<br>
@@ -134,6 +138,8 @@ function activeTxt(){
   if($("onlyFav").checked) t.push("お気に入りのみ");
   if($("nearSchool").checked) t.push("小学校1km以内");
   if($("fresh").value) t.push("新着"+$("fresh").value+"日以内");
+  if($("maxArea").value) t.push("面積"+$("maxArea").value+"㎡以下");
+  if($("maxUnit").value) t.push("坪単価"+$("maxUnit").value+"万円以下");
   if($("showExcluded").checked) t.push("候補外も表示");
   else if(excluded.size) t.push("候補外"+excluded.size+"件は非表示中");
   if($("showEnded").checked) t.push("掲載終了も表示");
@@ -149,6 +155,8 @@ function render(){
     if($("onlyEnded").checked && !d.ended) return false;
     if($("fresh").value && daysSince(d.date) > Number($("fresh").value)) return false;
     if(d.outside && !$("showOutside").checked) return false;
+    if($("maxArea").value && d.area * 3.305785 > Number($("maxArea").value)) return false;
+    if($("maxUnit").value && d.unit > Number($("maxUnit").value)) return false;
     if(q && !d.addr.includes(q)) return false;
     if(ward && d.ward !== ward) return false;
     if(lots && lotsOf(d.area) !== Number(lots)) return false;
@@ -213,15 +221,16 @@ function render(){
 $("toggleBtn").addEventListener("click", () => $("panel").classList.toggle("open"));
 $("clearBtn").addEventListener("click", () => {
   $("q").value=""; $("ward").value=""; $("lots").value=""; $("fresh").value="";
+  $("maxArea").value=""; $("maxUnit").value="";
   ["onlyRank","onlyFav","nearSchool","showExcluded","showEnded","onlyEnded"].forEach(id => $(id).checked=false); $("showOutside").checked=true;
   render();
 });
-["q","ward","lots","sort","fresh","onlyRank","onlyFav","nearSchool","showOutside","showExcluded","showEnded","onlyEnded"].forEach(id => {
+["q","ward","lots","sort","fresh","maxArea","maxUnit","onlyRank","onlyFav","nearSchool","showOutside","showExcluded","showEnded","onlyEnded"].forEach(id => {
   $(id).addEventListener("input", render); $(id).addEventListener("change", render);
 });
 const latestDate = DATA.reduce((a,d)=> d.date>a?d.date:a, "");
 const fmtMD = s => Number(s.slice(5,7))+"月"+Number(s.slice(8,10))+"日";
-$("verInfo").textContent = "v1.6.5／全"+DATA.length+"件（"+fmtMD(latestDate)+"時点）";
+$("verInfo").textContent = "v1.6.6／全"+DATA.length+"件（"+fmtMD(latestDate)+"時点）";
 $("ftPin").textContent = DATA.filter(d=>d.lat).length;
 $("ftNoPin").textContent = DATA.filter(d=>!d.lat).length;
 $("ftLatest").textContent = fmtMD(latestDate);
